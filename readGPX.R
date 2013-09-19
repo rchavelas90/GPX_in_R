@@ -24,7 +24,7 @@ readGPX <- function(
 )
  
 {    
- #options(warn = -1) ##R# Removes all warnings   
+ options(warn = -1) ##R# Removes all warnings   
  
  ##R# Reads elements with readGPX.element() function
  if(metadata==TRUE) { metadata <- .readGPX.element(gpx.file, "metadata") }     
