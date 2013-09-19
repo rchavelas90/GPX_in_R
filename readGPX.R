@@ -3,15 +3,21 @@
 ##http://plotkml.r-forge.r-project.org/readGPX.html
 ##Function Source
 ##https://r-forge.r-project.org/scm/viewvc.php/pkg/R/readGPX.R?view=markup&revision=279&root=plotkml
+
 ##This function has been modified by Ricardo Chavelas
-###Comments were added for clear undesrtanding ##R#
+###Fixed problem with metadata loading
+###Remove "Bounds" loading
+
+##Comments were added for clear undesrtanding by RCM with ##R#
+
+##Future possible actions: 
+### Check all code to match exactly with GPX XML shema (and extenions)
 
 ##R# Loads XML pakcage
 library(XML)
 readGPX <- function(
  gpx.file,
  metadata = TRUE,
- bounds = TRUE,
  waypoints = TRUE, 
  tracks = TRUE,  
  routes = TRUE   
@@ -21,15 +27,14 @@ readGPX <- function(
  #options(warn = -1) ##R# Removes all warnings   
  
  ##R# Reads elements with readGPX.element() function
- if(metadata==TRUE) { metadata <- .readGPX.element(gpx.file, "metadata") }    
- if(bounds==TRUE) { bounds <- .readGPX.element(gpx.file, "bounds") }    
+ if(metadata==TRUE) { metadata <- .readGPX.element(gpx.file, "metadata") }     
  if(waypoints==TRUE) { waypoints <- .readGPX.element(gpx.file, "wpt") }
  if(tracks==TRUE) { tracks <- .readGPX.element(gpx.file, "trk") }
  if(routes==TRUE) { routes <- .readGPX.element(gpx.file, "rte") }
  
  
  ##R# creates the named list with all the elements of the GPX file
- gpx <- list(metadata=metadata, bounds=bounds, waypoints=waypoints, tracks=tracks, routes=routes)
+ gpx <- list(metadata=metadata, waypoints=waypoints, tracks=tracks, routes=routes)
  return(gpx)
 }
 
@@ -111,7 +116,7 @@ readGPX <- function(
    }
   }
   
-  # bounds
+  # bounds (is not usefull in this version, however in newer versions may be usefull)
   if(element=="bounds"){
    nu <- which(names(top) %in% element)
    ret <- matrix(rep(NA, 4), nrow=2, dimnames = list(c("lat", "lon"), c("min", "max")))
@@ -123,7 +128,8 @@ readGPX <- function(
   }
   
   # metadata
-  ##R#
+  ##R# loads metadata according to XML shema and names the fields that are included
+  ## in the metadata of the GPX file
   if(element=="metadata"){
    lst <- c("name","desc","author","copyright","link","time","keywords","bounds",
             "extensions")

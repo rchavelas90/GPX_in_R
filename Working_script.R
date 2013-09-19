@@ -1,15 +1,19 @@
 getwd()
+rm(list=ls(all.names=T))
 #Load readGPX Functions
 source("readGPX.R")
 #Verify that readGPX() and .readGPX.element() functions are loaded correctly
 ls(all.names=T)
+#Read a test file from the GPX_test_files_folder (test_file==Tec_to_hm_2013-09-17T205421Z.gpx)
+data <- readGPX("GPX_test_files/test_file.gpx")
+#2nd Read a test file from the GPX_test_files_folder (test_file==Tec_to_hm_2013-09-17T205421Z.gpx)
+data <- readGPX("GPX_test_files/test_file_2.gpx")
+data_a <- .readGPX.element("GPX_test_files/test_file_2.gpx", "name")
 
-
-data <- readGPX("GPX_test_files/Tec_to_hm_2013-09-17T205421Z.gpx")
-setwd("GPX")
+str(data$metadata)
 
 str(data)
-str(data$tracks)
+
 data2 <- data$tracks[[1]][[1]]
 head(data2)
 head(data2$time)
