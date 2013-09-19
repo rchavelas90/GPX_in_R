@@ -21,14 +21,14 @@ readGPX <- function(
  #options(warn = -1) ##R# Removes all warnings   
  
  ##R# Reads elements with readGPX.element() function
- if(metadata==TRUE) { metadata <- .readGPX.element(gpx.file, "name") }    
+ if(metadata==TRUE) { metadata <- .readGPX.element(gpx.file, "metadata") }    
  if(bounds==TRUE) { bounds <- .readGPX.element(gpx.file, "bounds") }    
  if(waypoints==TRUE) { waypoints <- .readGPX.element(gpx.file, "wpt") }
  if(tracks==TRUE) { tracks <- .readGPX.element(gpx.file, "trk") }
  if(routes==TRUE) { routes <- .readGPX.element(gpx.file, "rte") }
  
  
- ##R# creates the a named list with all the elements of the GPX file
+ ##R# creates the named list with all the elements of the GPX file
  gpx <- list(metadata=metadata, bounds=bounds, waypoints=waypoints, tracks=tracks, routes=routes)
  return(gpx)
 }
@@ -123,17 +123,23 @@ readGPX <- function(
   }
   
   # metadata
-  if(element=="name"){
-   lst <- c("name","desc","author","email","url","urlname","time")
-   nu <- which(names(top) %in% lst)
-   if(!nu[[1]]=="NULL"){      
+  ##R#
+  if(element=="metadata"){
+   lst <- c("name","desc","author","copyright","link","time","keywords","bounds",
+            "extensions")
+   nu <- which(names(top) %in% element)
+   if(!nu[[1]]=="NULL"){  
+    numlst <- which(lst%in%names(top[[nu]]))
+    lst2 <- c()
+    for( i in seq_along(numlst)){
+     lst2[i] <- lst[numlst[i]]
+    }
     ret <- data.frame(NULL)
-    for(i in seq_along(lst)) {
-     try(ret[1,lst[i]] <- xmlValue(top[[nu[[i]]]]), silent = TRUE)
+    for(i in seq_along(numlst)) {
+     ret[1,lst2[i]] <- xmlValue(top[[nu]][[i]])
     }
    }
   }
-  
  }
  else { ret <- NULL }
  
