@@ -1,0 +1,16 @@
+{
+    "contents" : "data2$delta <- c()\ndata2$time <- as.POSIXct(data2$time, format=\"%Y-%m-%dT%H:%M:%SZ\")\nplot(data2$lat,data2$lon)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\n\nlibrary(RgoogleMaps)\nMyMap <- MapBackground(lat=data2$lat,lon=data2$lon)\nPlotOnStaticMap(MyMap=MyMap,lat=data2$lat,lon=data2$lon,FUN=lines,destfile=\"ejm.png\")\n\n\nlibrary(googleVis )\ng <- gvisGeoChart(data2,\"loc\",options=list(region=\"MX\"))\nplot(g)\ngvisGe\n\nhead(data2)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\ng2 <- gvisMap(data2,\"loc\",options=list(showLine=TRUE))\nplot(g2)\n\n\n",
+    "created" : 1379689990907.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2309723309",
+    "id" : "39D5FE8A",
+    "lastKnownWriteTime" : 140532471742560,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
