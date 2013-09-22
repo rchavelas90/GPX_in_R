@@ -1,10 +1,10 @@
 {
-    "contents" : "data2$delta <- c()\ndata2$time <- as.POSIXct(data2$time, format=\"%Y-%m-%dT%H:%M:%SZ\")\nplot(data2$lat,data2$lon)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\n\nlibrary(RgoogleMaps)\nMyMap <- MapBackground(lat=data2$lat,lon=data2$lon)\nPlotOnStaticMap(MyMap=MyMap,lat=data2$lat,lon=data2$lon,FUN=lines,destfile=\"ejm.png\")\n\n\nlibrary(googleVis )\ng <- gvisGeoChart(data2,\"loc\",options=list(region=\"MX\"))\nplot(g)\ngvisGe\n\nhead(data2)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\ng2 <- gvisMap(data2,\"loc\",options=list(showLine=TRUE))\nplot(g2)\n\n\n",
+    "contents" : "data2$delta <- c()\ndata2$time <- as.POSIXct(data2$time, format=\"%Y-%m-%dT%H:%M:%SZ\")\nplot(data2$lat,data2$lon)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\n\nlibrary(RgoogleMaps)\nMyMap <- MapBackground(lat=data2$lat,lon=data2$lon)\nPlotOnStaticMap(MyMap=MyMap,lat=data2$lat,lon=data2$lon,FUN=lines,destfile=\"ejm.png\")\n\n\nlibrary(googleVis )\ng <- gvisGeoChart(data2,\"loc\",options=list(region=\"MX\"))\nplot(g)\ngvisGe\n\nhead(data2)\ndata2$loc=paste(data2$lat,data2$lon,sep=\":\")\ng2 <- gvisMap(data2,\"loc\",options=list(showLine=TRUE))\nplot(g2)\n\n\n?splinefun\nx <- 1:10\ny <- rnorm(10)\nx;y\nop <- par(mfrow = c(2,1), mgp = c(2,.8,0), mar = .1+c(3,3,3,1))\nplot(x, y, main = \"spline[fun](.) through 10 points\")\nlines(spline(x, y))\nlines(spline(x, y, n = 201), col = 2)\n\nf <- splinefun(x, y)\nls(envir = environment(f))\nsplinecoef <- eval(expression(z), envir = environment(f))\ncurve(f(x), 1, 10, col = \"green\", lwd = 1.5)\npoints(splinecoef, col = \"purple\", cex = 2)\npar(op)\n\nx <- 1:10\ny <- rnorm(10)\npar(mfrow = c(2,1))\nplot(x, y, main = \"approx(.) and approxfun(.)\")\npoints(approx(x, y), col = 2, pch = \"*\")\npoints(approx(x, y, method = \"constant\"), col = 4, pch = \"*\")\n\nf <- approxfun(x, y)\ncurve(f(x), 0, 11, col = \"green2\")\npoints(x, y)\nis.function(fc <- approxfun(x, y, method = \"const\")) # TRUE\ncurve(fc(x), 0, 10, col = \"darkblue\", add = TRUE)\n## different extrapolation on left and right side :\nplot(approxfun(x, y, rule = 2:1), 0, 11,\n     col = \"tomato\", add = TRUE, lty = 3, lwd = 2)\n\n\n",
     "created" : 1379689990907.000,
     "dirty" : true,
     "encoding" : "",
     "folds" : "",
-    "hash" : "2309723309",
+    "hash" : "3615602824",
     "id" : "39D5FE8A",
     "lastKnownWriteTime" : 140532471742560,
     "path" : null,

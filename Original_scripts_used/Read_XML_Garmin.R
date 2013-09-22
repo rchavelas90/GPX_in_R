@@ -3,7 +3,6 @@
 
 # Read in xml files from Garmin ForeRunner
 library(XML)
-
 filename="GPX_test_files/test_file_5_Garmin"
 
 doc=xmlParse(paste(filename,".gpx",sep=""),useInternalNodes=TRUE)
@@ -108,7 +107,6 @@ df$Dist2D=cumsum(df$dDist2D)
 
 # Fit a spline function to the GPS coordinates & elevation
 east=splinefun(df$Seconds,df$East)
-east
 north=splinefun(df$Seconds,df$North)
 up=splinefun(df$Seconds,df$Elevation)
 dist=splinefun(df$Seconds,df$Dist)
@@ -116,7 +114,8 @@ hr=approxfun(df$Seconds,df$HeartRate) # Some gaps in heart rate record, linear i
 
 
 
-# Do finite centred differencing to give smoothest rate/gradient estimates
+# Do finite centred differencing to give smoothest rate(speed)/gradient estimates
+##R# This is, to get the (Dist,Seconds) x+1 value minus the x-1 value to get the x (speed)
 df$Speed=rep(0,length(df$Seconds))
 df$Gradient=rep(0,length(df$Seconds))
 for(x in 2:(length(df$Seconds)-1)){
@@ -125,6 +124,29 @@ for(x in 2:(length(df$Seconds)-1)){
  df[x,"Speed"]=Dd/Dt # m/s
  df[x,"Gradient"]=(df[x+1,"Elevation"]-df[x-1,"Elevation"])/Dd # m/m
 }
+
+##R# Complete values that werent taken into consideration with the finite centered dif.
+##R# Testing speed plot(df$Seconds[1:40],df$Speed[1:40],type="o")
+##R# head(df)
+##R# require(ggplot2)
+##R# ggplot(df,aes(x=Longitude,y=Latitude))+
+##R# geom_path(aes(colour=Speed,size="50"))
+##R# This plot can test the smoothing of the curve
+##R# ggplot(df,aes(x=Dist))+
+##R# geom_path(aes(y=Speed1,size="2"))+
+##R# geom_path(aes(y=Speed2,color="red",,size="2"))
+
+##R# This plot graphs the elevation against the distance
+##R# ggplot(df,aes(x=Dist))+
+##R# geom_path(aes(y=Elevation,size="2"))
+
+##R# df$Speed1 <- df$Speed
+##R# head(df$Speed1)
+##R# After smoothing the speed
+##R# df$Speed2 <- as.numeric(df$Speed)
+##R# head(df$Speed2)
+
+
 df[1,"Speed"]=df[2,"Speed"]
 df[length(df$Seconds),"Speed"]=df[length(df$Seconds)-1,"Speed"]
 df[1,"Gradient"]=df[2,"Gradient"]
@@ -132,8 +154,15 @@ df[length(df$Seconds),"Gradient"]=df[length(df$Seconds)-1,"Gradient"]
 
 # Smooth speed as it is unrealistically noisy
 df$Speed=smooth(df$Speed)
+##R# tail(df)
+##R# df[50:60,]
 
-# Fit a spline function to rate
+##R# Speed before spline function
+##R# df$Speedbfr <- df$Speed
+##R# df$Speedbfr <- as.numeric(df$Speedbfr)
+##R# df$Speedbfr == df$Speed
+
+# Fit a spline function to rate (##R# speed)
 speed=splinefun(df$Seconds,df$Speed)
 pace<-function(t) sapply(1/speed(t),max,0)
 ppace<-function(t) 1000*pace(t)/60
@@ -142,20 +171,27 @@ ppace<-function(t) 1000*pace(t)/60
 df$Speed=speed(df$Seconds)
 df$Pace=pace(df$Seconds)
 
+
 # Generate some plots
 reportfile=paste(title,filename,".pdf",sep="")
 print(paste("Building",reportfile))
 pdf(reportfile)
 
-# Generate time interpolation points
-Num=2001
+# Generate time interpolation points (##R# Time spaced in equal intervals  to get from 0 to max Time)
+Num=2001 
 minT=0; maxT=max(df$Seconds)
 interT=minT+(maxT-minT)*(0:Num)/Num
+##R#tail(df)
+##R#tail(interT)
 
 # Create a colour function for plots
+##R# colorRampPalette returns a function that takes an integer argument and returns
+##R# that number of colors interpolating the given seuqnece
+colfunc(5)
 colfunc=colorRampPalette(c("navy","white", "red3"),space="Lab")
 cp=colfunc(500)
 getCol<-function(colFrac) cp[1+round(499*colFrac)]
+
 
 # Generate fractional variables for colouring plots
 hrFrac=(hr(interT)-min(hr(interT)))/(max(hr(interT))-min(hr(interT)))
