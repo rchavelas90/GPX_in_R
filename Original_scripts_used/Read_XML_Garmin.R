@@ -7,7 +7,7 @@ filename="GPX_test_files/test_file_5_Garmin"
 
 doc=xmlParse(paste(filename,".gpx",sep=""),useInternalNodes=TRUE)
 
-# We need to extract the simple tree structure containing 
+# We need to extract the simple tree structure containing
 # the data which we can pass to xmlToDataFrame
 top=xmlRoot(doc)
 title=toString.XMLNode(top[[2]][[1]][[1]]) ##R# <Trk><name>
@@ -41,7 +41,6 @@ df$HeartRate=as.integer(df$HeartRate)
 df$DateTime=as.character(df$DateTime)
 ##R# look at the structure of the columns
 ##R# Elevation (num) DateTime (chr) HeartRate (int) Longitude (num) Latitude (num)
-str(df)
 
 # Convert timestamp to number of seconds since start of run
 date=substr(df$DateTime[1],1,10) ##R# Obtains the date of the file, first 10 char
@@ -140,36 +139,78 @@ for(x in 2:(length(df$Seconds)-1)){
 ##R# ggplot(df,aes(x=Dist))+
 ##R# geom_path(aes(y=Elevation,size="2"))
 
-##R# df$Speed1 <- df$Speed
-##R# head(df$Speed1)
-##R# After smoothing the speed
-##R# df$Speed2 <- as.numeric(df$Speed)
-##R# head(df$Speed2)
-
 
 df[1,"Speed"]=df[2,"Speed"]
 df[length(df$Seconds),"Speed"]=df[length(df$Seconds)-1,"Speed"]
 df[1,"Gradient"]=df[2,"Gradient"]
 df[length(df$Seconds),"Gradient"]=df[length(df$Seconds)-1,"Gradient"]
+##R# head(df)
+##R# Record non-smooth speed
+df$Speed1 <- df$Speed
+##R# head(df$Speed1)
+##R# Use only after smoothing speed
+
+
 
 # Smooth speed as it is unrealistically noisy
 df$Speed=smooth(df$Speed)
+##R# Record smoothed speed
+df$Speed2 <- as.numeric(df$Speed)
 ##R# tail(df)
 ##R# df[50:60,]
-
-##R# Speed before spline function
-##R# df$Speedbfr <- df$Speed
-##R# df$Speedbfr <- as.numeric(df$Speedbfr)
-##R# df$Speedbfr == df$Speed
+##R#head(df)
 
 # Fit a spline function to rate (##R# speed)
 speed=splinefun(df$Seconds,df$Speed)
 pace<-function(t) sapply(1/speed(t),max,0)
 ppace<-function(t) 1000*pace(t)/60
 
-# Update dataframe with speed and pace
+##R# Testing the spline function and comparing its smoothness
+##R# speed(0)
+##R# tail(df)
+##R# speed(2720)
+##R# pace(2720)
+##R# 1/speed(2720)
+##R# pace(c(2720,2716,2711))
+
+##R# Test different speed columns
+##R# x <- 1:2720
+##R# par(mfrow=c(2,1),bty="l",lab=c(10,10,0.5))
+##R# plot(x,speed(x),type="l",xlim=c(0,2700),ylim=c(3,6))
+##R# head(df)
+##R# plot(df$Seconds,df$Speed2,type="l",xlim=c(0,2700),ylim=c(3,6))
+##R# dev.off()
+
+##R# Reset par in graphics 
+##R# resetPar <- function() {
+##R# dev.new()
+##R# op <- par(no.readonly = TRUE)
+##R# dev.off()
+##R# op
+##R# }
+##R# resetPar()
+
+# Update dataframe with speed and pace (after spline function)
 df$Speed=speed(df$Seconds)
 df$Pace=pace(df$Seconds)
+
+##R# This plot can test the smoothing of the curve and the spline (notice that it
+##R# does aparently nothing)
+##R# head(df)
+##R# str(df)
+##R# png("speed_time.png",height=1000,width=4000,pointsize=1,res=300)
+##R# ggplot(df,aes(x=Seconds))+
+##R# geom_path(aes(y=Speed1),colour="blue",linetype=1)+
+ ##R# geom_path(aes(y=Speed2),colour="green",linetype=1)+ ##R# See that spline fun is "useless" here
+##R# geom_path(aes(y=Speed),colour="red",linetype=1)+
+##R# coord_cartesian(xlim = c(0, 2700), ylim=c(2, 5))
+##R# dev.off()
+
+
+
+
+
+
 
 
 # Generate some plots
