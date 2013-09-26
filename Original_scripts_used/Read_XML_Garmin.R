@@ -207,12 +207,6 @@ df$Pace=pace(df$Seconds)
 ##R# dev.off()
 
 
-
-
-
-
-
-
 # Generate some plots
 reportfile=paste(title,filename,".pdf",sep="")
 print(paste("Building",reportfile))
@@ -221,24 +215,38 @@ pdf(reportfile)
 # Generate time interpolation points (##R# Time spaced in equal intervals  to get from 0 to max Time)
 Num=2001 
 minT=0; maxT=max(df$Seconds)
-interT=minT+(maxT-minT)*(0:Num)/Num
+interT=minT+(maxT-minT)*(0:Num)/Num ##R# generate Num+1 numbers from minT to maxT (delta T * Frac)
 ##R#tail(df)
 ##R#tail(interT)
 
 # Create a colour function for plots
 ##R# colorRampPalette returns a function that takes an integer argument and returns
 ##R# that number of colors interpolating the given seuqnece
-colfunc(5)
+##R# colfunc(5)
 colfunc=colorRampPalette(c("navy","white", "red3"),space="Lab")
 cp=colfunc(500)
 getCol<-function(colFrac) cp[1+round(499*colFrac)]
 
+##R# source("Original_scripts_used/online_Hex_Color.R")
+##R# testing colors
+##R# onlineHexColor(getCol(0.01))
+
+
+
 
 # Generate fractional variables for colouring plots
+##R# Funtion hr with parameter interT (time) [(Val-min)/(max-min)]
+##R#******* This function computes a lot of sums, may be wise to simplify ir
 hrFrac=(hr(interT)-min(hr(interT)))/(max(hr(interT))-min(hr(interT)))
 upFrac=(up(interT)-min(up(interT)))/(max(up(interT))-min(up(interT)))
+
+##R#******* This suggests to use an unknown pace for max value, be careful, could use a 95% til
 pmax=min(c(60*7/1000,max(pace(interT)))) # Else scales ruined by stopping and walking
 pFrac=(pace(interT)-min(pace(interT)))/(pmax-min(pace(interT)))
+##R# Plotting the histogram
+head(df)
+hist(pace(interT),breaks=30)
+
 
 # Calculate Color Scales
 hrLevels=min(hr(interT))+(1:length(cp))*(max(hr(interT))-min(hr(interT)))/length(cp)

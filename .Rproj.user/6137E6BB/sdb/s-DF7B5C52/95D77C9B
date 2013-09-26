@@ -1,0 +1,16 @@
+{
+    "contents" : "#Code supplied by james cheshire Feb 2012\n#load packages and enter development mode\nlibrary('devtools')\ndev_mode()\nlibrary(ggplot2)\nlibrary(proto)\n#if your map data is a shapefile use maptools\nlibrary(maptools)\ngpclibPermit()\n#create GeomSegment2 function\nGeomSegment2 objname <- “geom_segment2″\ndraw if (is.linear(coordinates)) {\n return(with(coord_transform(coordinates, data, scales),\n             segmentsGrob(x, y, xend, yend, default.units=”native”,\n                          gp = gpar(col=alpha(colour, alpha), lwd=size * .pt,\n                                    lty=linetype, lineend = “round”),\n                          arrow = arrow)\n ))\n}\n}})\ngeom_segment2 “identity”, position = “identity”, arrow = NULL, …) {\n GeomSegment2$new(mapping = mapping, data = data, stat = stat,\n                  position = position, arrow = arrow, …)\n}\n#load data stlat/stlong are the start points elat/elong are the end points of the lines\nlon names(lon)<-c(“stlat”, “stlon”, “elat”, “elong”, “count”)\n#load spatial data. You need to fortify if loaded as a shapefile\nwater built\n#This step removes the axes labels etc when called in the plot.\nxquiet yquiet<-scale_y_continuous(“”, breaks=NA)\nquiet<-list(xquiet, yquiet)\n#create base plot\nplon1\n#ready the plot layers\npbuilt<-c(geom_polygon(data=built, aes(x=long, y=lat, group=group), colour= “#4B4B4B”, fill=”#4F4F4F”, lwd=0.2))\n                       pwater<-c(geom_polygon(data=water, aes(x=long, y=lat, group=group), colour= “#708090″, fill=”#708090″))\n                                              #create plot\n                                              plon2\n                                              plon2",
+    "created" : 1380133933102.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3145059959",
+    "id" : "95D77C9B",
+    "lastKnownWriteTime" : 433791696896,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled3"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
