@@ -161,9 +161,9 @@ df$Speed2 <- as.numeric(df$Speed)
 ##R#head(df)
 
 # Fit a spline function to rate (##R# speed)
-speed=splinefun(df$Seconds,df$Speed)
-pace<-function(t) sapply(1/speed(t),max,0)
-ppace<-function(t) 1000*pace(t)/60
+speed=splinefun(df$Seconds,df$Speed)  # m/s
+pace<-function(t) sapply(1/speed(t),max,0) 
+ppace<-function(t) 1000*pace(t)/60 ##R# Unit conversion from s/m to min/km
 
 ##R# Testing the spline function and comparing its smoothness
 ##R# speed(0)
@@ -236,23 +236,49 @@ getCol<-function(colFrac) cp[1+round(499*colFrac)]
 
 # Generate fractional variables for colouring plots
 ##R# Funtion hr with parameter interT (time) [(Val-min)/(max-min)]
-##R#******* This function computes a lot of sums, may be wise to simplify ir
-hrFrac=(hr(interT)-min(hr(interT)))/(max(hr(interT))-min(hr(interT)))
-upFrac=(up(interT)-min(up(interT)))/(max(up(interT))-min(up(interT)))
+##R# ******* This function computes a lot of sums, may be wise to simplify ir
+hrFrac=(hr(interT)-min(hr(interT)))/(max(hr(interT))-min(hr(interT))) ##R# Heart rate
+upFrac=(up(interT)-min(up(interT)))/(max(up(interT))-min(up(interT))) ##R# Elevation
 
-##R#******* This suggests to use an unknown pace for max value, be careful, could use a 95% til
+
+##R#******* This suggests to use an unknown pace for max value, be careful, could use a 95% quantile
 pmax=min(c(60*7/1000,max(pace(interT)))) # Else scales ruined by stopping and walking
-pFrac=(pace(interT)-min(pace(interT)))/(pmax-min(pace(interT)))
-##R# Plotting the histogram
-head(df)
-hist(pace(interT),breaks=30)
+pFrac=(pace(interT)-min(pace(interT)))/(pmax-min(pace(interT))) ##R# Pace
+
+##R# Plotting the histogram - see how far is the max value of pace
+##R# head(df)
+##R# hist(pace(interT),breaks=30)
+
+##R# This function graphs the quantile distibtion of the pace, so that we can have a better
+##R# estimate of the max pace (stops must be considered, but not at this point)
+##R# library("ggplot2")
+##R# qplot(Pace,data=df,geom="histogram",binwidth=0.05)
+##R# c <- rnorm(10000,0,0.05) or pace(interT)
+##R# quantilePace <- quantile(pFrac,probs=seq(0,1,0.01))
+##R# probs <- names(quantilePace)
+##R# probs <- factor(probs,levels=probs)
+##R#  qplot(y=quantilePace,x=probs)
+##R# quantile(pace(interT),probs=0.95)
 
 
 # Calculate Color Scales
-hrLevels=min(hr(interT))+(1:length(cp))*(max(hr(interT))-min(hr(interT)))/length(cp)
-upLevels=min(up(interT))+(1:length(cp))*(max(up(interT))-min(up(interT)))/length(cp)
+##R# get length(cp) values (500) from the min hr to max hr (same for others)
+hrLevels=min(hr(interT))+(1:length(cp))*(max(hr(interT))-min(hr(interT)))/length(cp) ##R# Heart rate
+upLevels=min(up(interT))+(1:length(cp))*(max(up(interT))-min(up(interT)))/length(cp) ##R# Elevation
+##R# Computes the max pace, if it is greater that 7 min/km it overwrites it with #7
 pmax=min(c(7,max(ppace(interT)))) # Else scales ruined by stopping and walking
-pLevels=min(ppace(interT))+(1:length(cp))*(pmax-min(ppace(interT)))/length(cp)
+pLevels=min(ppace(interT))+(1:length(cp))*(pmax-min(ppace(interT)))/length(cp) ##R# Pace
+
+##R# Trying to understand how everything is formed :P
+##R# library("ggplot2")
+##R# qplot(Pace,data=df,geom="histogram",binwidth=0.05)
+##R# c <- rnorm(10000,0,0.05) or pace(interT)
+##R# quantilePace <- quantile(pFrac,probs=seq(0,1,0.01))
+##R# probs <- names(quantilePace)
+##R# probs <- factor(probs,levels=probs)
+##R#  qplot(y=quantilePace,x=probs)
+##R# quantile(pace(interT),probs=0.95)
+
 
 # Make a plotting dataframe, calculate displacement during each timestep
 plt=data.frame(time=interT,east=east(interT),north=north(interT),up=up(interT),hr=hr(interT),distance=sapply(interT,dist),speed=speed(interT),pace=pace(interT))
