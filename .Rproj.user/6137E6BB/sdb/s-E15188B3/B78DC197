@@ -1,0 +1,15 @@
+{
+    "contents" : "\n.Rhistory\n.RData\n",
+    "created" : 1380217170558.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "421058270",
+    "id" : "B78DC197",
+    "lastKnownWriteTime" : 1380217175,
+    "path" : "~/Rwork1/GitLocal/GPX_in_R/.gitignore",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "text"
+}

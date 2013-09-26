@@ -17,6 +17,7 @@ data=toString.XMLNode(top[[2]][[3]]) ##R# <Trk><trkseg>
 # When it is, data node is moved up one
 # Really need to access nodes by name, but can't see how...
 if(data=="NULL") data=toString.XMLNode(top[[2]][[2]])
+
 if(data=="NULL") data=toString.XMLNode(top[[2]][[1]])
 
 # Fill a data frame with interesting data
