@@ -208,8 +208,8 @@ df$Pace=pace(df$Seconds)
 ##R# dev.off()
 
 
-# Generate some plots
-reportfile=paste(title,filename,".pdf",sep="")
+# Generate some plots ##R# not used now
+reportfile=paste("prueba",".pdf",sep="")
 print(paste("Building",reportfile))
 pdf(reportfile)
 
@@ -262,6 +262,9 @@ pFrac=(pace(interT)-min(pace(interT)))/(pmax-min(pace(interT))) ##R# Pace
 ##R# quantile(pace(interT),probs=0.95)
 
 
+
+
+
 # Calculate Color Scales
 ##R# get length(cp) values (500) from the min hr to max hr (same for others)
 hrLevels=min(hr(interT))+(1:length(cp))*(max(hr(interT))-min(hr(interT)))/length(cp) ##R# Heart rate
@@ -269,6 +272,7 @@ upLevels=min(up(interT))+(1:length(cp))*(max(up(interT))-min(up(interT)))/length
 ##R# Computes the max pace, if it is greater that 7 min/km it overwrites it with #7
 pmax=min(c(7,max(ppace(interT)))) # Else scales ruined by stopping and walking
 pLevels=min(ppace(interT))+(1:length(cp))*(pmax-min(ppace(interT)))/length(cp) ##R# Pace
+
 
 ##R# Trying to understand how everything is formed :P
 ##R# library("ggplot2")
@@ -282,15 +286,22 @@ pLevels=min(ppace(interT))+(1:length(cp))*(pmax-min(ppace(interT)))/length(cp) #
 
 
 # Make a plotting dataframe, calculate displacement during each timestep
-plt=data.frame(time=interT,east=east(interT),north=north(interT),up=up(interT),hr=hr(interT),distance=sapply(interT,dist),speed=speed(interT),pace=pace(interT))
+##R# A data frame with the useful info
+plt=data.frame(time=interT, east=east(interT), north=north(interT), up=up(interT), hr=hr(interT),
+               distance=sapply(interT,dist),speed=speed(interT),pace=pace(interT))
+
+##R# all(dist(interT)==sapply(interT,dist))
+##R# def.par <- par(no.readonly = TRUE) # save default, for resetting...
 
 # Elevation trace
 layout(matrix(data=c(1,2), nrow=1, ncol=2), widths=c(4,1), heights=c(1,1))
-plot(NULL,xlab="East (m)",ylab="North (m)",xlim=c(min(df$East),max(df$East)),ylim=c(min(df$North),max(df$North)),main=paste(title,date))
+plot(NULL,xlab="East (m)",ylab="North (m)",xlim=c(min(df$East),max(df$East)),
+     ylim=c(min(df$North),max(df$North)),main=paste(title,date))
 rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey")
 points(east(interT),north(interT),pch=16,cex=0.6,col=getCol(upFrac))
 # Draw legend
-image(1, upLevels,matrix(data=upLevels, ncol=length(upLevels),nrow=1),col=cp,xlab="",ylab="Elevation (m)",xaxt="n")
+image(1, upLevels,matrix(data=upLevels, ncol=length(upLevels),nrow=1),col=cp,
+      xlab="",ylab="Elevation (m)",xaxt="n")
 layout(1)
 
 # Heart rate trace
